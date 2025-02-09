@@ -135,13 +135,7 @@ Ensure Docker is running before executing the pipeline.
 - **Docker Errors**
   - **Fix:** Ensure Docker is installed, running, and the container image is accessible.
 
----
 
-## 📜 License
-
-This pipeline is provided as-is under the **MIT License**.
-
----
 
 ## 📚 References
 
