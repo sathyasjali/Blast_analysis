@@ -5,18 +5,16 @@
  */
 
 process MAKEBLASTDB {
-    publishDir params.outdir, mode: 'copy'
+    publishDir "${params.refOutDir}", mode: 'copy'
 
     input:
         path reference_file
 
     output:
-        tuple val(reference_file.baseName), path("blast_db/${reference_file.baseName}.*")
-
+        tuple val(reference_file.baseName), path("${params.refOutDir}/${reference_file.baseName}.*")
 
     script:
     """
-    mkdir -p blast_db
-    makeblastdb -in ${reference_file} -out blast_db/${reference_file.baseName}.* -parse_seqids -dbtype nucl
+    makeblastdb -in ${reference_file} -out ${params.refOutDir}/${reference_file.baseName} -parse_seqids -dbtype nucl
     """
 }
