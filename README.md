@@ -1,62 +1,45 @@
-# Blast Analysis Pipeline
+### Blast analysis pipeline
 
-A Nextflow DSL2 pipeline for running MEGABLAST searches against multiple reference genomes and parsing results into CSV format.
+Nextflow DSL2 pipeline for running MEGABLAST searches against multiple reference genomes and parsing results into CSV.
 
-## Overview
+#### Steps
 
-This pipeline automates three steps:
+1. **MAKEBLASTDB** - Build nucleotide BLAST database for each reference genome
+2. **MEGABLAST** - Search query FASTA against each database in parallel
+3. **PARSE_XML** - Parse BLAST XML output into CSV
 
-1. **MAKEBLASTDB** — Builds a nucleotide BLAST database for each reference genome (`.fna`)
-2. **MEGABLAST** — Searches a query FASTA against each database in parallel
-3. **PARSE_XML** — Parses BLAST XML output into CSV with key hit metrics
+#### Requirements
 
-## Requirements
+- Nextflow (>= 22.10)
+- Docker
 
-- [Nextflow](https://www.nextflow.io/) (>= 22.10)
-- [Docker](https://www.docker.com/)
-
-## Usage
+#### Usage
 
 ```bash
 nextflow run main.nf
-```
-
-### Parameters
-
-| Parameter          | Default          | Description                        |
-|--------------------|------------------|------------------------------------|
-| `referenceDir`     | `data/reference` | Directory containing reference `.fna` files |
-| `queriesDir`       | `data/reads`     | Directory containing query FASTA   |
-| `outdir`           | `results`        | Output directory                   |
-| `evalue`           | `1e-5`           | E-value threshold                  |
-| `max_target_seqs`  | `10`             | Maximum target sequences per query |
-
-### Resume a previous run
-
-```bash
 nextflow run main.nf -resume
 ```
 
-## Output
+#### Parameters
+
+| Parameter | Default | Description |
+|-----------|---------|-------------|
+| `referenceDir` | `data/reference` | Reference `.fna` files |
+| `queriesDir` | `data/reads` | Query FASTA directory |
+| `outdir` | `results` | Output directory |
+| `evalue` | `1e-5` | E-value threshold |
+| `max_target_seqs` | `10` | Max target sequences |
+
+#### Output
 
 ```
 results/
-├── blast_db/          # BLAST databases
-├── blast_results/     # Raw XML output
-└── parsed/            # CSV files (Query ID, Hit ID, E-value, Bit Score, Alignment Length)
+  blast_db/        - BLAST databases
+  blast_results/   - Raw XML output
+  parsed/          - CSV files
 ```
 
-## Pipeline DAG
-
-```
-references (*.fna)
-       │
-   MAKEBLASTDB ──┐
-                  ├── combine ── MEGABLAST ── PARSE_XML ── *.csv
-   query.fasta ──┘
-```
-
-## Containers
+#### Containers
 
 - BLAST: `community.wave.seqera.io/library/blast:2.16.0`
 - Biopython: `quay.io/biocontainers/biopython:1.78`
